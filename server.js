@@ -6,6 +6,10 @@ import Stripe from "stripe";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
@@ -127,7 +131,7 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
 });
 
 // Serve static files (including success.html)
-app.use(express.static(path.resolve('.')));
+app.use(express.static(__dirname));
 
 app.use(express.json());
 

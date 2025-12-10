@@ -15,19 +15,20 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       padding: 2rem;
     }
 
     .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .success-section {
       background: white;
       border-radius: 12px;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-      max-width: 600px;
-      width: 100%;
       padding: 3rem;
+      margin-bottom: 2rem;
       text-align: center;
     }
 
@@ -75,30 +76,39 @@
       justify-content: center;
     }
 
-    .divider {
-      border: none;
-      border-top: 2px solid #eee;
-      margin: 2rem 0;
+    .info-box {
+      background: #e7f3ff;
+      border-left: 4px solid #667eea;
+      padding: 1rem;
+      border-radius: 6px;
+      color: #004085;
+      margin-bottom: 1.5rem;
+      text-align: left;
     }
 
-    .links {
+    .btn-group {
       display: flex;
-      flex-direction: column;
       gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
     }
 
-    a {
+    a, button {
       display: inline-block;
       padding: 0.75rem 1.5rem;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
       text-decoration: none;
+      border: none;
       border-radius: 6px;
       transition: transform 0.2s, box-shadow 0.2s;
       font-weight: 500;
+      cursor: pointer;
+      font-size: 1rem;
     }
 
-    a:hover {
+    a:hover, button:hover {
       transform: translateY(-2px);
       box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
     }
@@ -116,18 +126,34 @@
       font-weight: bold;
     }
 
-    .info-box {
-      background: #e7f3ff;
-      border-left: 4px solid #667eea;
-      padding: 1rem;
-      border-radius: 6px;
-      color: #004085;
-      margin-bottom: 1.5rem;
-      text-align: left;
+    .app-section {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      margin-top: 2rem;
     }
 
-    @media (max-width: 600px) {
-      .container {
+    .app-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .app-header h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .app-frame {
+      width: 100%;
+      height: 600px;
+      border: none;
+    }
+
+    @media (max-width: 768px) {
+      .success-section {
         padding: 1.5rem;
       }
 
@@ -139,38 +165,63 @@
         font-size: 1.1rem;
       }
 
-      .links {
+      .btn-group {
         flex-direction: column;
+      }
+
+      a, button {
+        width: 100%;
+      }
+
+      .app-frame {
+        height: 400px;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>
-      <span class="checkmark">✓</span>
-      Благодарим за поръчката!
-    </h1>
+    <!-- Success Section -->
+    <div class="success-section">
+      <h1>
+        <span class="checkmark">✓</span>
+        Благодарим за поръчката!
+      </h1>
 
-    <p>Ето вашият лицензен ключ:</p>
+      <p>Ето вашият лицензен ключ:</p>
 
-    <div class="license" id="license">
-      <span class="loading">⏳ Зареждане...</span>
+      <div class="license" id="license-box">
+        <span class="loading">⏳ Зареждане...</span>
+      </div>
+
+      <div class="info-box">
+        <strong>ℹ️ Съхранете лицензния ключ</strong>
+        <p style="margin-top: 0.5rem; margin-bottom: 0;">Ще ви трябва за активиране на продукта.</p>
+      </div>
+
+      <h3 style="margin-top: 1.5rem;">🔗 Онлайн версия</h3>
+      <div class="btn-group">
+        <a href="https://eurobg.netlify.app/" target="_blank">🌐 Стартирай онлайн приложението</a>
+      </div>
+
+      <h3 style="margin-top: 1.5rem;">⬇️ Изтегляне на офлайн версия</h3>
+      <div class="btn-group" style="flex-direction: column;">
+        <a href="https://your-download-url.com/EuroBG_1.0.0_x64-setup.exe" download>💾 Изтегли EXE (Windows)</a>
+        <a href="https://your-download-url.com/EuroBG_1.0.0_x64_en-US.msi" download>💾 Изтегли MSI (IT среди)</a>
+      </div>
     </div>
 
-    <div class="info-box">
-      <strong>ℹ️ Съхранете лицензния ключ</strong>
-      <p style="margin-top: 0.5rem; margin-bottom: 0;">Ще ви трябва за активиране на продукта.</p>
-    </div>
-
-    <hr class="divider" />
-
-    <p style="margin-bottom: 1.5rem;">Какво следва?</p>
-
-    <div class="links">
-      <a href="https://yourdomain.com/download-offline">📥 Свали офлайн версия</a>
-      <a href="https://online.yourdomain.com">🌐 Отвори онлайн версията</a>
-      <a href="https://support.yourdomain.com">📧 Свържи се с поддръжка</a>
+    <!-- Embedded App Section -->
+    <div class="app-section">
+      <div class="app-header">
+        <h2>🎨 EuroBG Онлайн версия</h2>
+        <p>Използвай своя лицензен ключ по-долу</p>
+      </div>
+      <iframe 
+        class="app-frame" 
+        src="https://eurobg.netlify.app/"
+        title="EuroBG Online App">
+      </iframe>
     </div>
   </div>
 
@@ -186,19 +237,19 @@
         .then(res => res.json())
         .then(data => {
           if (data.license) {
-            document.getElementById("license").textContent = data.license;
+            document.getElementById("license-box").textContent = data.license;
           } else {
-            document.getElementById("license").innerHTML = 
+            document.getElementById("license-box").innerHTML = 
               '<div class="error">⚠️ Не е намерен лицензен ключ. Моля, свържете се с поддръжка.</div>';
           }
         })
         .catch(err => {
           console.error("Error:", err);
-          document.getElementById("license").innerHTML = 
+          document.getElementById("license-box").innerHTML = 
             '<div class="error">⚠️ Грешка при зареждане на лиценза.</div>';
         });
     } else {
-      document.getElementById("license").innerHTML = 
+      document.getElementById("license-box").innerHTML = 
         '<div class="error">⚠️ Липсва идентификатор на сесията.</div>';
     }
   </script>
