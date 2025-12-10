@@ -1,0 +1,1 @@
+# EuroBG-license-server
