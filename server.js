@@ -5,6 +5,7 @@ import { createClient } from "@supabase/supabase-js";
 import Stripe from "stripe";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
+import path from "path";
 
 dotenv.config();
 
@@ -125,6 +126,9 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
   res.status(200).send('OK');
 });
 
+// Serve static files (including success.html)
+app.use(express.static(path.resolve('.')));
+
 app.use(express.json());
 
 // Helper function to generate license key
@@ -225,6 +229,37 @@ app.post("/verify", async (req, res) => {
     res.json({ valid: true, active: data.active, license: data });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+// Get license by Stripe session ID
+app.get("/get-license", async (req, res) => {
+  const session_id = req.query.session_id;
+
+  if (!session_id) {
+    return res.status(400).json({ error: "Missing session_id" });
+  }
+
+  try {
+    const session = await stripe.checkout.sessions.retrieve(session_id);
+    const email = session.customer_details.email;
+
+    const { data, error } = await supabase
+      .from('licenses')
+      .select('key')
+      .eq('email', email)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    if (error || !data) {
+      return res.status(404).json({ error: 'License not found' });
+    }
+
+    res.json({ license: data.key });
+  } catch (err) {
+    console.error("Error fetching license:", err.message);
+    res.status(500).json({ error: "Server error" });
   }
 });
 
