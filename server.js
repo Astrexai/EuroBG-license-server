@@ -302,4 +302,44 @@ app.post("/create-checkout-session", async (req, res) => {
   }
 });
 
+// Shopify Webhook - Triggered when order is created/paid
+app.post('/shopify-webhook', express.json(), async (req, res) => {
+  try {
+    const data = req.body;
+
+    const email = data?.email;
+    const orderId = data?.id;
+
+    if (!email || !orderId) {
+      console.log("⚠️ Няма имейл или ID в Shopify webhook");
+      return res.status(400).send("Missing data");
+    }
+
+    const licenseKey = uuidv4(); // Генерирай лиценза
+
+    // Запиши в Supabase
+    const { error } = await supabase.from('licenses').insert([{
+      email,
+      key: licenseKey,
+      active: true,
+      created_at: new Date().toISOString(),
+    }]);
+
+    if (error) {
+      console.error("❌ Supabase insert error:", error.message);
+      return res.status(500).send("Supabase error");
+    }
+
+    console.log(`✅ Лиценз създаден за ${email}: ${licenseKey}`);
+
+    // Добави лиценза като бележка в Shopify поръчката
+    await attachLicenseToShopifyOrder(orderId, licenseKey);
+
+    res.status(200).send("OK");
+  } catch (err) {
+    console.error("❌ Webhook processing error:", err.message);
+    res.status(500).send("Internal error");
+  }
+});
+
 app.listen(3000, () => console.log("License server running on :3000"));
