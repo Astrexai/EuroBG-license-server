@@ -307,11 +307,14 @@ app.post('/shopify-webhook', express.json(), async (req, res) => {
   try {
     const data = req.body;
 
+    // Debug: log incoming Shopify payload to verify structure
+    console.log('[Shopify webhook] payload:', JSON.stringify(data, null, 2));
+
     const email = data?.email;
     const orderId = data?.id;
 
     if (!email || !orderId) {
-      console.log("⚠️ Няма имейл или ID в Shopify webhook");
+      console.log("⚠️ Няма имейл или ID в Shopify webhook", { email, orderId });
       return res.status(400).send("Missing data");
     }
 
