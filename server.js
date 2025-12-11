@@ -74,7 +74,7 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
 
-    const email = session.customer_details.email;
+    const email = session.customer_email || session.customer_details?.email;
     const licenseKey = uuidv4(); // Генерираме уникален лиценз
     const orderId = session.metadata?.shopify_order_id; // ако го подадеш през metadata
 
@@ -246,7 +246,7 @@ app.get("/get-license", async (req, res) => {
 
   try {
     const session = await stripe.checkout.sessions.retrieve(session_id);
-    const email = session.customer_details.email;
+    const email = session.customer_email || session.customer_details?.email;
 
     const { data, error } = await supabase
       .from('licenses')
@@ -264,6 +264,41 @@ app.get("/get-license", async (req, res) => {
   } catch (err) {
     console.error("Error fetching license:", err.message);
     res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Create Stripe Checkout Session
+app.post("/create-checkout-session", async (req, res) => {
+  try {
+    const { shopify_order_id } = req.body;
+
+    const session = await stripe.checkout.sessions.create({
+      mode: 'payment',
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'bgn',
+            product_data: {
+              name: 'EuroBG – Онлайн + Офлайн софтуер',
+              description: 'Пълен достъп до онлайн и офлайн версия на EuroBG',
+            },
+            unit_amount: 300, // 3.00 BGN (amount in cents)
+          },
+          quantity: 1,
+        },
+      ],
+      metadata: {
+        shopify_order_id: shopify_order_id || '' // Include Shopify order ID if provided
+      },
+      success_url: 'https://eurobg-license-server.onrender.com/success.html?session_id={CHECKOUT_SESSION_ID}',
+      cancel_url: 'https://eurobg-license-server.onrender.com/cancel.html',
+    });
+
+    res.json({ url: session.url });
+  } catch (err) {
+    console.error("Error creating checkout session:", err.message);
+    res.status(500).json({ error: "Failed to create checkout session" });
   }
 });
 
